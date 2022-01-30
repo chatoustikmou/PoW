@@ -2,7 +2,7 @@
 on_game_start_PoW = {
 	effect = {
 		set_global_variable = {
-			name = mod_PoW_active
+			name = PoW_is_loaded
 			value = yes
 		}
 	}
@@ -84,7 +84,7 @@ PoW_dungeon_transfer_on_action = {
 		debug_log = "dbg_log PoW transfer to dungeon triggered"
 		debug_log_scopes = no
 		# Transfer PoWs to dungeon
-		# TODO handle dungeon vs house arrest depending on has_character_flag = flag:distinguished_PoW
+		# TODO handle dungeon vs house arrest depending on has_character_flag = distinguished_PoW
 		scope:army.var:story_PoW = {
 			every_in_list = {
 				variable = story_PoW_list

@@ -363,7 +363,7 @@ types MapIcons {
 
 						text_single = {
 							visible = "[Not( EqualTo_int32(UnitMapIcon.GetShownCount, GetDataModelSize(UnitMapIcon.GetUnitItems)) )]"
-							text = "+"
+							raw_text = "+"
 							default_format = "#medium;bold;glow_color:{0.1,0.1,0.1,1.0}"
 							margin_top = 2
 
@@ -762,11 +762,9 @@ types MapIconTempateTypes {
 
 			container = {
 				parentanchor = vcenter
-				widgetanchor = vcenter
 
 				highlight_icon = {
 					parentanchor = vcenter
-					widgetanchor = vcenter
 					size = { 40 40 }
 					name = "blocked_icon"
 					texture = "gfx/interface/icons/map_icons/onmap_siege_icon.dds"
@@ -775,7 +773,6 @@ types MapIconTempateTypes {
 				highlight_icon = {
 					visible = "[Siege.EnableAssaultButton]"
 					parentanchor = vcenter
-					widgetanchor = vcenter
 					position = { 16 2 }
 					size = { 23 39 }
 					name = "assault_icon"
@@ -784,7 +781,6 @@ types MapIconTempateTypes {
 			}
 			container = {
 				parentanchor = vcenter
-				widgetanchor = vcenter
 
 				progressbar_standard = {
 					position = { -3 4 }
@@ -801,6 +797,8 @@ types MapIconTempateTypes {
 			}
 
 			container = {
+				parentanchor = vcenter
+
 				visible = "[And(Siege.FortLevelHasImpact, Siege.IsPlayerInAttackerSide)]"
 				highlight_icon = {
 					name = "holding_level_high"
@@ -810,6 +808,15 @@ types MapIconTempateTypes {
 					}
 					alwaystransparent = yes
 					texture = "gfx/interface/icons/icon_holding_castle.dds"
+
+
+					glow = {
+					    using = Color_Red
+					    using = Glow_Standard
+					    glow_radius = 4
+					}
+
+					using = Animation_Glow_Pulse
 				}
 
 				highlight_icon = {
@@ -818,10 +825,10 @@ types MapIconTempateTypes {
 					parentanchor = bottom|right
 					block "overlay_size"
 					{
-						size = { 10 10 }
+						size = { 20 20 }
 					}
 					alwaystransparent = yes
-					texture = "gfx/interface/icons/symbols/icon_cross.dds"
+					texture = "gfx/interface/icons/symbols/icon_warning.dds"
 				}
 			}
 		}

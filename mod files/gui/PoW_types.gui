@@ -31,7 +31,7 @@ types PoW {
 											layoutpolicy_horizontal = expanding
 											text_single = {
 												visible = "[And(Character.GetLiege.IsValid,Not(Character.IsRuler))]"
-												text = "Captured from [Character.GetLiege.GetName]"
+												text = "POW_CAPTURED_FROM"
 											}
 											expand = {}
 										}
@@ -116,7 +116,7 @@ types PoW {
 											layoutpolicy_horizontal = expanding
 											text_single = {
 												visible = "[And(Character.GetLiege.IsValid,Not(Character.IsRuler))]"
-												text = "Captured from [Character.GetLiege.GetName]"
+												text = "POW_CAPTURED_FROM"
 											}
 											expand = {}
 										}
@@ -153,320 +153,32 @@ types PoW {
 			}
 		}	
 	}
+}
 
-	# type PoW_transfer_window = window
-	# {
-	# 	name = "army_PoW_transfer_window"
-	# 	visible = "[GetVariableSystem.Exists( 'PoW_transfer_toggle')]"
-	# 	size = { 900 700 }
-	# 	parentanchor = right
-	# 	layer = top
-		
-	# 	attachto = {
-	# 		widgetid = "army_window"
-	# 		stackmode = top
-	# 		inherit_data_context = yes
-	# 	}
+template UniUI_PoW_army_disband {
+	datacontext = "[GetScriptedGui('PoW_army_disband')]"
+	onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( Army.MakeScope ).End)]"
+}
 
-	# 	using = Window_Background
-	# 	using = Window_Decoration_Spike
+template PoW_background {
+	background = {
+		visible = "[GetScriptedGui('prison_screen_exclude_PoW').IsShown(GuiScope.SetRoot( CharacterListItem.GetCharacter.MakeScope ).End)]"
+		texture = "gfx/interface/skinned/illustrations/dungeon.dds"
+		margin = { -5 0 }
+		fittype = centercrop
+		alpha = 0.3
 
-	# 	using = Animation_ShowHide_Quick
+		using = Mask_Rough_Edges
+	}
 
-	# 	vbox = {
-	# 		using = Window_Margins
+	background = {
+		visible = "[GetScriptedGui('prison_screen_PoW').IsShown(GuiScope.SetRoot( CharacterListItem.GetCharacter.MakeScope ).End)]"
+		# texture = "gfx/interface/illustrations/army_status/camped.dds"
+		texture = "[Character.MakeScope.Var('story_PoW').Var('story_army').Army.GetArmyStatusIcon]"
+		margin = { -5 0 }
+		fittype = centercrop
+		alpha = 0.3
 
-	# 		header_pattern = {
-	# 			layoutpolicy_horizontal = expanding
-
-	# 			blockoverride "header_text"
-	# 			{
-	# 				text = "TESTING"
-	# 			}
-
-	# 			blockoverride "button_close"
-	# 			{
-	# 				onclick = "[GetVariableSystem.Toggle( 'PoW_transfer_toggle')]"
-	# 			}
-	# 		}
-
-	# 		hbox = {
-	# 			layoutpolicy_horizontal = expanding
-	# 			margin = { 0 12 }
-
-	# 			widget = {
-	# 				size = { 300 100 }
-	# 				vbox = {
-	# 					name = "left"
-	# 					datacontext = "[ArmyReorgWindow.GetLeftArmyComposition]"
-	# 					visible = "[DataModelHasItems( ArmyReorgWindow.GetLeftItems )]"
-
-	# 					vbox = {
-	# 						spacing = 5
-
-	# 						text_single = {
-	# 							name = "army_name"
-	# 							text = "[ArmyComposition.GetName]"
-	# 							layoutpolicy_horizontal = expanding
-	# 							default_format = "#high"
-	# 							using = Font_Size_Medium
-	# 							align = left
-	# 						}
-
-	# 						soldiers_and_quality_small = {
-	# 							margin = { 5 5 }
-	# 							layoutpolicy_horizontal = expanding
-	# 						}
-
-	# 						text_single = {
-	# 							name = "army_maintenance"
-	# 							text = "ARMY_REORG_LEFT_MAINTENANCE"
-	# 							layoutpolicy_horizontal = expanding
-	# 							align = left
-	# 						}
-	# 					}
-
-	# 					expand = {}
-	# 				}
-	# 			}
-
-	# 			widget = {
-	# 				size = { 300 100 }
-
-	# 				vbox = {
-	# 					name = "right"
-	# 					datacontext = "[ArmyReorgWindow.GetRightArmyComposition]"
-	# 					visible = "[DataModelHasItems( ArmyReorgWindow.GetRightItems )]"
-
-	# 					vbox = {
-	# 						spacing = 5
-
-	# 						text_single = {
-	# 							name = "army_name"
-	# 							text = "[ArmyComposition.GetName]"
-	# 							layoutpolicy_horizontal = expanding
-	# 							default_format = "#high"
-	# 							using = Font_Size_Medium
-	# 							align = left
-	# 						}
-
-	# 						soldiers_and_quality_small = {
-	# 							margin = { 5 5 }
-	# 							layoutpolicy_horizontal = expanding
-	# 						}
-
-	# 						text_single = {
-	# 							name = "army_maintenance"
-	# 							text = "ARMY_REORG_RIGHT_MAINTENANCE"
-	# 							layoutpolicy_horizontal = expanding
-	# 							align = left
-	# 						}
-	# 					}
-
-	# 					expand = {}
-	# 				}
-	# 			}
-	# 		}
-
-	# 		hbox = {
-	# 			layoutpolicy_horizontal = expanding
-	# 			layoutpolicy_vertical = expanding
-	# 			spacing = 20
-
-	# 			scrollbox = {
-	# 				layoutpolicy_horizontal = expanding
-	# 				layoutpolicy_vertical = expanding
-
-	# 				blockoverride "scrollbox_empty"
-	# 				{
-	# 					visible = "[IsDataModelEmpty(ArmyReorgWindow.GetLeftItems)]"
-	# 					text = "REORG_EMPTY_LIST"
-	# 				}
-
-	# 				blockoverride "scrollbox_content"
-	# 				{
-	# 					vbox = {
-	# 						datamodel = "[ArmyReorgWindow.GetLeftItems]"
-	# 						layoutpolicy_horizontal = expanding
-	# 						spacing = 3
-
-	# 						item = {
-	# 							button_standard_list = {
-	# 								name = "regiment_item"
-	# 								layoutpolicy_horizontal = expanding
-	# 								size = { 0 50 }
-	# 								onclick = "[RegimentReorgEntry.MoveRegiment]"
-
-	# 								using = reorg_regiment_tooltips
-
-	# 								hbox = {
-	# 									margin_right = 5
-
-	# 									hbox_reorg_regiment_entry_core = {
-	# 										name = "info"
-	# 									}
-
-	# 									button_select_arrow = {
-	# 										alwaystransparent = yes
-	# 										size = { 20 20 }
-	# 									}
-	# 								}
-	# 							}
-	# 						}
-	# 					}
-	# 				}
-	# 			}
-
-	# 			scrollbox = {
-	# 				layoutpolicy_horizontal = expanding
-	# 				layoutpolicy_vertical = expanding
-
-	# 				blockoverride "scrollbox_empty"
-	# 				{
-	# 					visible = "[IsDataModelEmpty(ArmyReorgWindow.GetRightItems)]"
-	# 					text = "REORG_EMPTY_LIST"
-	# 				}
-
-	# 				blockoverride "scrollbox_content"
-	# 				{
-	# 					vbox = {
-	# 						datamodel = "[ArmyReorgWindow.GetRightItems]"
-	# 						layoutpolicy_horizontal = expanding
-	# 						spacing = 3
-
-	# 						item = {
-	# 							button_standard_list = {
-	# 								name = "regiment_item"
-	# 								layoutpolicy_horizontal = expanding
-	# 								size = { 0 50 }
-	# 								onclick = "[RegimentReorgEntry.MoveRegiment]"
-
-	# 								using = reorg_regiment_tooltips
-	# 								blockoverride "levies_placement" {
-	# 									using = tooltip_es
-	# 								}
-	# 								blockoverride "maa_placement" {
-	# 									using = tooltip_es
-	# 								}
-	# 								blockoverride "knight_placement" {
-	# 									using = tooltip_es
-	# 								}
-	# 								blockoverride "vassal_placement" {
-	# 									using = tooltip_es
-	# 								}
-	# 								hbox = {
-	# 									margin_left = 5
-	# 									button_select_arrow = {
-	# 										alwaystransparent = yes
-	# 										size = { 20 20 }
-	# 										mirror = horizontal
-	# 									}
-
-	# 									hbox_reorg_regiment_entry_core = {
-	# 										name = "info"
-	# 									}
-	# 								}
-	# 							}
-	# 						}
-	# 					}
-	# 				}
-	# 			}
-
-	# 		}
-
-	# 		hbox = {
-	# 			layoutpolicy_horizontal = expanding
-	# 			margin = { 0 15 }
-
-	# 			vbox = {
-	# 				name = "left_buttons"
-	# 				enabled = "[DataModelHasItems( ArmyReorgWindow.GetLeftItems )]"
-	# 				layoutpolicy_vertical = expanding
-	# 				layoutpolicy_horizontal = expanding
-
-	# 				hbox = {
-	# 					spacing = 3
-
-	# 					button_standard = {
-	# 						name = "select"
-	# 						text = "SELECT"
-	# 						default_format = "#high"
-	# 						onclick = "[ArmyReorgWindow.SelectLeft]"
-	# 						tooltip = "SELECT_TOOLTIP"
-	# 					}
-
-	# 					button_round = {
-	# 						name = "disband_button"
-	# 						size = { 38 38 }
-
-	# 						enabled = "[ArmyReorgWindow.CanDisband]"
-	# 						tooltip = "DISBAND_TOOLTIP"
-
-	# 						button_army_disband = {
-	# 							parentanchor = center
-	# 							onclick = "[ArmyReorgWindow.DisbandLeft]"
-	# 						}
-	# 					}
-	# 				}
-	# 			}
-
-	# 			vbox = {
-	# 				name = "right_buttons"
-	# 				enabled = "[DataModelHasItems( ArmyReorgWindow.GetRightItems )]"
-	# 				layoutpolicy_vertical = expanding
-	# 				layoutpolicy_horizontal = expanding
-
-	# 				hbox = {
-	# 					spacing = 3
-
-	# 					button_standard = {
-	# 						name = "select"
-	# 						text = "SELECT"
-	# 						default_format = "#high"
-	# 						onclick = "[ArmyReorgWindow.SelectRight]"
-	# 						tooltip = "SELECT_TOOLTIP"
-	# 					}
-
-	# 					button_round = {
-	# 						name = "disband_button"
-	# 						size = { 38 38 }
-
-	# 						enabled = "[ArmyReorgWindow.CanDisband]"
-	# 						tooltip = "DISBAND_TOOLTIP"
-
-	# 						button_army_disband = {
-	# 							parentanchor = center
-	# 							onclick = "[ArmyReorgWindow.DisbandRight]"
-	# 						}
-	# 					}
-	# 				}
-	# 			}
-	# 		}
-	# 	}
-	# }
-
-	# type PoW_transfer_button = widget
-	# {
-	# 	size = { 42 45 }
-	# 	visible = "[GreaterThan_int32(GetDataModelSize(ArmyWindow.GetSelectedUnitItems), '(int32)1')]"
-
-	# 	button_round = {
-	# 		name = "PoW_transfer_button"
-	# 		enabled = "[ArmyWindow.CanReorgSelected]"
-	# 		tooltip = "[ArmyWindow.BuildReorgTooltip]"
-	# 		using = tooltip_ne
-	# 		parentanchor = bottom
-
-	# 		button_icon = {
-	# 			texture = "gfx/army_PoW_transfer.dds"
-	# 			clicksound = "event:/SFX/UI/Unit/Army/sfx_ui_unit_army_merge"
-	# 			onclick = "[ExecuteConsoleCommand('gui.createwidget gui/PoW_window.gui army_PoW_transfer_window')]"
-	# 			# onclick = "[GetVariableSystem.Toggle( 'gui_toggle' )]"
-	# 			parentanchor = center
-	# 		}
-
-			
-	# 	}
-		
-	# }
+		using = Mask_Rough_Edges
+	}
 }

@@ -14,3 +14,5 @@
   ARMY_IN_WRONG_LOCATION: "is held by [TARGET_CHARACTER.MakeScope.Var('story_PoW').Var('story_army').Army.GetName], located in [TARGET_CHARACTER.MakeScope.Var('story_PoW').Var('story_location').Province.GetCounty.GetName], which isn't owned by [CHARACTER.GetName], who would be paying the ransom"
   ARMY_IN_WRONG_LOCATION_FIRST: "is held by [TARGET_CHARACTER.MakeScope.Var('story_PoW').Var('story_army').Army.GetName], located in [TARGET_CHARACTER.MakeScope.Var('story_PoW').Var('story_location').Province.GetCounty.GetName], which you do not own"
   POW_IS_BARGAINING_CHIP: "[CHARACTER.GetNameNoTooltip] is an important bargaining chip in the on-going war against [TARGET_CHARACTER.GetName]"
+
+  POW_CAPTURED_FROM: "Captured from [Character.GetLiege.GetName]"

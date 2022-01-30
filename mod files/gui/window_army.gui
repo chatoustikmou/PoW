@@ -33,8 +33,7 @@ window = {
 
 		using = Animation_FadeIn_Standard
 		using = Sound_WindowShow_Standard
-
-		position = { 0 0 }
+		using = Animation_FadeIn_BottomLeft
 	}
 
 	state = {
@@ -44,14 +43,12 @@ window = {
 
 		using = Animation_FadeOut_Standard
 		using = Sound_WindowHide_Standard
-		position = { -60 60 }
+		using = Animation_FadeOut_BottomLeft
 	}
 
 	vbox = {
 		margin_right = 35
 		margin_top = 30
-		layoutpolicy_horizontal = expanding
-		layoutpolicy_vertical = expanding
 		set_parent_size_to_minimum = yes
 
 		spacer = {
@@ -205,9 +202,6 @@ window = {
 
 				hbox = {
 
-					# # [PoW]
-					# PoW_transfer_button = {}
-					# # [/PoW]
 
 					widget = {
 						size = { 42 45 }
@@ -240,10 +234,6 @@ window = {
 
 							button_army_merge = {
 								parentanchor = center
-								# # [PoW]
-								# datacontext = "[GetScriptedGui('PoW_army_merge')]"
-								# onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( Army.MakeScope ).End )]"
-								# # [/PoW]
 								onclick = "[ArmyWindow.MergeSelected]"
 								shortcut = "army_merge"
 							}
@@ -260,7 +250,7 @@ window = {
 						{
 							onclick = "[ArmyWindow.CloseAndDeselect]"
 						}
-					}					
+					}
 				}
 
 				expand = {
@@ -298,9 +288,9 @@ window = {
 
 			expand = {}
 
-			# [PoW]
+			# [UniUI] [PoW]
 			PoW_in_army = {}
-			# [/PoW]
+			# [/PoW] [/UniUI]
 
 			hbox = {
 				name = "loot"
@@ -388,7 +378,6 @@ window = {
 
 			hbox = {
 				### name
-				layoutpolicy_horizontal = expanding
 				margin = { 10 4 }
 
 				spacing = 5
@@ -623,9 +612,6 @@ window = {
 						}
 
 						vbox = {
-							layoutpolicy_horizontal = expanding
-							layoutpolicy_vertical = expanding
-
 							hbox = {
 								layoutpolicy_horizontal = expanding
 								layoutpolicy_vertical = expanding
@@ -705,7 +691,6 @@ window = {
 
 								text_label_center = {
 									name = "Commander"
-									layoutpolicy_horizontal = expanding
 									multiline = yes
 									max_width = 115
 									text = "[commander|E]"
@@ -965,7 +950,6 @@ window = {
 		}
 
 		vbox = {
-			layoutpolicy_vertical = expanding
 			margin_right = 35
 			spacing = 5
 
@@ -1140,10 +1124,12 @@ window = {
 				button_round = {
 					name = "unit_custom_split_button"
 					enabled = "[ArmyWindow.CanSplitCustomSelected]"
+					
 
 					button_army_create = {
 						parentanchor = center
 						tooltip = "[ArmyWindow.BuildSplitCustomTooltip]"
+						using = tooltip_ne
 						onclick = "[ArmyWindow.ToggleSplitArmyWindow]"
 						shortcut = army_create_new
 					}
@@ -1151,12 +1137,14 @@ window = {
 
 				button_round = {
 					name = "split_in_half_button"
+					
 
 					button_army_split_in_half = {
 						parentanchor = center
 						onclick = [ArmyWindow.SplitHalfSelected]
 						shortcut = army_split_half
 						tooltip = [ArmyWindow.BuildSplitHalfTooltip]
+						using = tooltip_ne
 					}
 					enabled = [ArmyWindow.CanSplitHalfSelected]
 				}
@@ -1166,6 +1154,7 @@ window = {
 					onclick = "[ArmyWindow.SplitSelectedHiredAndEventTroops]"
 					tooltip = "[ArmyWindow.BuildSplitHiredAndEventTroopsTooltip]"
 					enabled = "[ArmyWindow.CanSplitSelectedHiredAndEventTroops]"
+					using = tooltip_ne
 
 					button_army_split_off_special_troops = {
 						parentanchor = center
@@ -1175,6 +1164,7 @@ window = {
 
 				button_round = {
 					name = "split_for_siege_button"
+					using = tooltip_ne
 					visible = "[Army.IsSieging]"
 					button_army_split_off_besiegers = {
 						parentanchor = center
@@ -1215,22 +1205,23 @@ window = {
 
 					enabled = [ArmyWindow.CanToggleRaiding]
 					tooltip = [ArmyWindow.BuildToggleRaidingTooltip]
+					using = tooltip_ne
 					visible = "[GetPlayer.CanRaid]"
 				}
 
 				button_round = {
 					name = "disband_button"
+					using = tooltip_ne
 
 					enabled = [ArmyWindow.CanDisband]
 					tooltip = [ArmyWindow.BuildDisbandTooltip]
 
 					button_army_disband = {
+						# [UniUI] [PoW]
+						using = UniUI_PoW_army_disband
+						# [/PoW] [/UniUI]
 						parentanchor = center
 						onclick = [ArmyWindow.DisbandSelected]
-						# [PoW]
-						datacontext = "[GetScriptedGui('PoW_army_disband')]"
-						onclick = "[ScriptedGui.Execute( GuiScope.SetRoot( Army.MakeScope ).End)]"
-						# [/PoW]
 						shortcut = army_disband
 					}
 				}
@@ -1238,8 +1229,6 @@ window = {
 		}
 	}
 }
-
-
 
 window = {
 	name = "army_reorganization_window"
@@ -1588,7 +1577,6 @@ window = {
 					datamodel = "[AttachToArmyWindow.AccessLocalUnits]"
 
 					item = {
-					
 						button_standard_list = {
 							name = "local_unit_item"
 							layoutpolicy_horizontal = expanding
@@ -1597,10 +1585,9 @@ window = {
 							down = "[AttachToArmyWindow.IsSelectedUnit( UnitItem.Self )]"
 
 							hbox = {
-								layoutpolicy_horizontal = expanding
 								margin = { 10 0 }
 								spacing = 10
-							
+
 								coa_realm_tiny = {
 									datacontext = "[UnitItem.GetOwner]"
 								}
@@ -1667,8 +1654,6 @@ window = {
 	}
 }
 
-
-
 ######################################################
 ################ TYPES AND TEMPLATES #################
 ######################################################
@@ -1676,7 +1661,7 @@ template reorg_regiment_tooltips {
 	hbox = {
 		datacontext = "[RegimentReorgEntry.GetKnight]"
 		visible = "[Character.IsValid]"
-		layoutpolicy_horizontal = growing
+
 		block "knight_placement" {
 			using = tooltip_ws
 		}
@@ -1689,13 +1674,15 @@ template reorg_regiment_tooltips {
 			}
 		}
 	}
+
 	hbox = {
 		datacontext = "[RegimentReorgEntry.GetRegiment.GetRegiment]"
 		visible = "[RegimentReorgEntry.IsMaA]"
-		layoutpolicy_horizontal = growing
+
 		block "maa_placement" {
 			using = tooltip_ws
 		}
+
 		tooltipwidget = {
 			using = regiment_container_tooltip
 
@@ -1703,6 +1690,7 @@ template reorg_regiment_tooltips {
 				divider_light = {
 					layoutpolicy_horizontal = expanding
 				}
+
 				text_single = {
 					layoutpolicy_horizontal = expanding
 					text = "REORG_INSTRUCTION"
@@ -1711,25 +1699,28 @@ template reorg_regiment_tooltips {
 			}
 		}
 	}
+
 	hbox = {
 		datacontext = "[RegimentReorgEntry.GetRegiment.GetRegiment]"
 		visible = "[And( Not( Or( RegimentReorgEntry.IsMaA, RegimentReorgEntry.GetKnight.IsValid ) ), RegimentReorgEntry.GetRegiment.GetFromVassal.IsValid )]"
-		layoutpolicy_horizontal = growing
+
 		block "vassal_placement" {
 			using = tooltip_ws
 		}
 		tooltip = TT_REORG_VASSAL_LEVIES
 	}
+
 	hbox = {
 		datacontext = "[RegimentReorgEntry.GetRegiment.GetRegiment]"
 		visible = "[And( Not( Or( RegimentReorgEntry.IsMaA, RegimentReorgEntry.GetKnight.IsValid ) ), Not( RegimentReorgEntry.GetRegiment.GetFromVassal.IsValid ) )]"
-		layoutpolicy_horizontal = growing
+
 		block "levies_placement" {
 			using = tooltip_ws
 		}
 		tooltip = TT_REORG_LEVIES
 	}
 }
+
 types ArmyWindow
 {
 	type multi_unit_button = button {

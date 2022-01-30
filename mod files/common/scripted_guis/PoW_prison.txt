@@ -23,7 +23,7 @@ PoW_army_disband = {
 			debug_log = "dbg_log PoW transfer to dungeon triggered on_disband"
 			debug_log_scopes = no
 			# Transfer PoWs to dungeon
-			# TODO handle dungeon vs house arrest depending on has_character_flag = flag:distinguished_PoW
+			# TODO handle dungeon vs house arrest depending on has_character_flag = distinguished_PoW
 			var:story_PoW = {
 				every_in_list = {
 					if = {

@@ -29,6 +29,13 @@ All remaining bugs are my own.
 
 [h1]Changelog[/h1]
 
+Patch 1.0 :
+
+# Miscelaneous
+- Updated for Fleur-de-lis 1.5
+- Integration into the release build of UniUI
+- Removed vanilla files being unnecessary replaced for improved compatibility
+
 Hotfix 0.1.4
 
 # Languages

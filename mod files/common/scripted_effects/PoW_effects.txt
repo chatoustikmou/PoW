@@ -100,6 +100,7 @@ PoW_transfer_to_story_same_character_effect = {
 	}
 }
 
+# [Vanilla] From file common\scripted_effects\00_prison_effects.txt
 # A lite version of imprison_character_effect without opinion penalties or other consequences (as they were captured in war, not at your command)
 # [PoW]
 # scope:PoW_army needed

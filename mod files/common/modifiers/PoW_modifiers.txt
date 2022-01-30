@@ -1,0 +1,8 @@
+﻿prisoner_of_war = {
+	diplomacy = -5
+	dread_baseline_add = -20
+	dread_loss_mult = 1
+	monthly_lifestyle_xp_gain_mult = -0.75
+	# health = { < script math > }
+	icon = prison_negative
+}

@@ -51,6 +51,7 @@ siege.0001 = {
 	}
 
 	immediate = {
+		save_scope_as = occupant
 		# [PoW]
 		if = {
 			limit = { NOT = { exists = scope:barony }}
@@ -61,9 +62,7 @@ siege.0001 = {
 			debug_log = "dbg_log on_siege_completion"
 			scope:barony = { debug_log_scopes = no }
 		}
-	
 		# For use in PoW_capture_effect
-		save_scope_as = occupant
 		scope:barony.title_province = { save_scope_as = battle_loc }
 
 		scope:occupant = {
@@ -249,73 +248,64 @@ siege.0001 = {
 		}	
  		
 		### IMPRISON AND KILL EFFECTS ###
-		# [PoW]
-		if = {
-			limit = { 
-				list_size = {
-					name = captured_targets_effects
-					value > 0
+		every_in_list = {
+			list = captured_targets_effects
+
+			# Since we sent custom imprisonment events, we want to block the default ones.
+			hidden_effect = {
+				add_character_flag = {
+					flag = block_imprisonment_event
+					days = 1
 				}
 			}
-			every_in_list = {
-				list = captured_targets_effects
+			# [PoW]
+			PoW_capture_effect = {
+				TARGET = THIS
+				IMPRISONER = ROOT
+				LOCATION = scope:battle_loc
+			}
+			# [/PoW]
 
-				# Since we sent custom imprisonment events, we want to block the default ones.
-				hidden_effect = {
-					add_character_flag = {
-						flag = block_imprisonment_event
-						days = 1
-					}
+			### IF NECESSARY, SEND TOASTS TO WAR LEADERS ###
+
+			# Check if this prisoner is important enough (worth war score) that it is worth sending a toast about them in the first place.
+			if = {
+				limit = {
+					siege_0001_character_is_important_hostage = yes
+				}
+				save_scope_as = important_hostage
+
+				# The imprisoner must be informed that they captured an important hostage.
+				scope:occupant = {
+					trigger_event = siege.0005
 				}
 
-				PoW_capture_effect = {
-					TARGET = THIS
-					IMPRISONER = ROOT
-					LOCATION = scope:battle_loc
-				}
-
-				### IF NECESSARY, SEND TOASTS TO WAR LEADERS ###
-
-				# Check if this prisoner is important enough (worth war score) that it is worth sending a toast about them in the first place.
+				# The losing primary participant must be informed that they will/have lost warscore because a hostage was captured.
 				if = {
 					limit = {
-						siege_0001_character_is_important_hostage = yes
-					}
-					save_scope_as = important_hostage
-
-					# The imprisoner must be informed that they captured an important hostage.
-					scope:occupant = {
-						trigger_event = siege.0005
-					}
-
-					# The losing primary participant must be informed that they will/have lost warscore because a hostage was captured.
-					if = {
-						limit = {
-							# But not if they themselves are the prisoner! (they will get an event already upon being imprisoned).
-							NOT = {
-								scope:important_hostage = scope:primary_siege_defender
-							}
-						}
-						scope:primary_siege_defender = {
-							trigger_event = siege.0006
+						# But not if they themselves are the prisoner! (they will get an event already upon being imprisoned).
+						NOT = {
+							scope:important_hostage = scope:primary_siege_defender
 						}
 					}
+					scope:primary_siege_defender = {
+						trigger_event = siege.0006
+					}
+				}
 
-					# If the primary siege attacker is different from the occupier, we also need to send a message to the siege attacker.
-					if = {
-						limit = {
-							NOT = {
-								scope:occupant = scope:primary_siege_attacker
-							}
+				# If the primary siege attacker is different from the occupier, we also need to send a message to the siege attacker.
+				if = {
+					limit = {
+						NOT = {
+							scope:occupant = scope:primary_siege_attacker
 						}
-						scope:primary_siege_attacker = {
-							trigger_event = siege.0007
-						}
+					}
+					scope:primary_siege_attacker = {
+						trigger_event = siege.0007
 					}
 				}
 			}
 		}
-		# [/PoW]
 		every_in_list = {
 			list = killed_targets
 
@@ -968,6 +958,78 @@ siege.0014 = {
 	after = {
 		remove_variable = num_other_relevant_slain_combatants
 	}	
+}
+
+scripted_trigger siege_0031_artifact_can_be_stolen = {
+	exists = this
+	OR = {
+		scope:barony.holder = { # If the character is in the province and not leading an army, their stuff is probably valid to steal
+			location = scope:barony.title_province
+			NOR = {
+				exists = commanding_army
+				exists = knight_army
+				is_imprisoned = yes
+			}
+		}
+		is_equipped = no
+		ep1_artifact_is_court_artifact_trigger = yes
+	}
+}
+
+# Chance to steal an artifact from the holding holder.
+siege.0031 = {
+	hidden = yes
+
+	trigger = { 
+		scope:barony.holder = {
+			# Can only steal an artifact if this barony is the holder's capital (where they have their treasury/royal court.
+			capital_barony = scope:barony
+
+			# Holder also needs to actually possess an artifact to steal.
+			any_character_artifact = {
+				siege_0031_artifact_can_be_stolen = yes
+			}
+		}
+	}
+
+	immediate = {
+		scope:barony.holder = {	
+			random_character_artifact = {
+				limit = { siege_0031_artifact_can_be_stolen = yes }
+				save_scope_as = stolen_artifact
+			}
+		}
+
+		random_list = {
+			30 = {
+				ep1_chance_stealing_damaging_artifacts_modifier = { TARGET = scope:barony.holder }
+				# Artifact Stolen
+				
+				steal_artifact_in_siege_effect = {
+					LOCATION = scope:barony.title_province
+					ATTACKER = root
+					DEFENDER = scope:barony.holder
+					ARTIFACT = scope:stolen_artifact
+					IS_RAID = no
+				}
+			}
+			30 = {
+				ep1_chance_stealing_damaging_artifacts_modifier = { TARGET = scope:barony.holder }
+				# Artifact Damaged
+				damage_artifact_in_battle_effect = {
+					LOCATION = scope:barony.title_province
+					OWNER = scope:barony.holder
+					OPPONENT = root
+					DURABILITY_LOSS = 20
+					ARTIFACT = scope:stolen_artifact
+					IS_DUEL = no
+				}
+			}
+			20 = {
+				# Nothing Happens
+			}
+		}
+	}
 }
 
 # Sieged Lost Notifications
